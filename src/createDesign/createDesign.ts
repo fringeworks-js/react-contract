@@ -1,8 +1,8 @@
-import adjustColor from '@fringeworks/design-utils/adjustColor';
-import changeAlpha from '@fringeworks/design-utils/changeAlpha';
-import chooseReadableColor from '@fringeworks/design-utils/chooseReadableColor';
-import ensureContrast from '@fringeworks/design-utils/ensureContrast';
-import mixColors from '@fringeworks/design-utils/mixColors';
+import adjustColor from '@fringeworks/design-utils/color/adjustColor';
+import changeAlpha from '@fringeworks/design-utils/color/changeAlpha';
+import chooseReadableColor from '@fringeworks/design-utils/color/chooseReadableColor';
+import ensureContrast from '@fringeworks/design-utils/color/ensureContrast';
+import mixColors from '@fringeworks/design-utils/color/mixColors';
 import type { AbsoluteColor } from '@fringeworks/types';
 import type {
   Design,

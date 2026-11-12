@@ -4,12 +4,12 @@
 
 **[日本語のREADMEはこちら](./README.ja.md)**
 
+It provides prop conventions (names, types, and meanings) shared across component kinds and implementations, along with helpers that work with any component following those conventions. Components that follow the conventions can be swapped for one another, and what you learn on one component carries over to the others.
+
 ## Installation
 
 ```bash
 npm install @fringeworks/react-contract
-# or
-pnpm add @fringeworks/react-contract
 ```
 
 Supports React 18 and 19.
@@ -343,45 +343,50 @@ Length properties (`borderRadius`, `borderWidth`, `gap`, `paddingX`, `paddingY`,
 
 ### Types
 
-| Type                              | Description                                                                                                |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `Option<V>`                       | An option (`value`, `label?`, `disabled?`). You may add properties                                         |
-| `DisplayOption<V>`                | An option to show (`Option<V>` with a required `label` and `unlisted`, which tells whether it is unlisted) |
-| `UnlistedPlacement`               | Where to show unlisted values (`'hidden'`, `'start'`, `'end'`)                                             |
-| `ValueProps<T>`                   | The main value of a display component                                                                      |
-| `EditableValueProps<T, TChanged>` | The main value of an input component (a controlled or uncontrolled state)                                  |
-| `OpenProps`                       | The open state                                                                                             |
-| `InputValueChangeProps`           | The notice of the text in the input                                                                        |
-| `MainActionProps<V>`              | The notice of the main action                                                                              |
-| `DisabledProps`                   | The setting that disables operation                                                                        |
-| `ReadOnlyProps`                   | The setting that prevents changing the value                                                               |
-| `RequiredProps`                   | The setting that marks the value as required                                                               |
-| `InvalidProps`                    | The setting that marks the value as invalid                                                                |
-| `OptionsProps<V>`                 | The options                                                                                                |
-| `UnlistedPlacementProps`          | Where to show unlisted values (`unlistedPlacement`)                                                        |
-| `KeepUnlistedProps`               | Whether to keep unlisted values that are no longer selected (`keepUnlisted`)                               |
-| `SelectAllUnlistedProps`          | The props for how "select all" handles unlisted values (`selectAllIncludesUnlisted`)                       |
-| `UseDisplayOptionsResult<V>`      | The result of `useDisplayOptions`                                                                          |
-| `DesignDefinition`                | The design definition of a component (the properties the root and each part accept, and their states)      |
-| `DesignPartDefinition`            | The properties the root or a part accepts, and their states                                                |
-| `Design<D>`                       | The design values passed to a component (created from the definition)                                      |
-| `DesignValue<T, S>`               | A design value (a single value, or an object per state)                                                    |
-| `DesignState`                     | The states design values are split by                                                                      |
-| `DesignProperty`                  | The names of design properties                                                                             |
-| `DesignPropertyValues`            | The design properties and the types of values they accept                                                  |
-| `DesignStyle`                     | The `style` of CSS variables `createDesignStyle` creates                                                   |
-| `DesignableComponent<D>`          | A component `withDesign` can wrap (one that takes `design` and has `designDefinition`)                     |
-| `DefaultDesign<C>`                | The default design values passed to `withDesign`                                                           |
-| `CreateDesignOptions`             | Values passed to `createDesign` that the design is created from                                            |
-| `DesignTemplate<D, O>`            | Design template (the same shape as design values, with color and length specs in place of values)          |
-| `DesignColorSpec<K>`              | A spec that creates a color (JSON-compatible data)                                                         |
-| `DesignColorFunction<O>`          | A function that takes the inputs and returns a color (written as a template value)                         |
-| `DesignColorKey<O>`               | Input keys that pass colors                                                                                |
-| `DesignColorProperty`             | Design properties that take color values                                                                   |
-| `DesignLengthSpec<K>`             | A spec that creates a length (JSON-compatible data)                                                        |
-| `DesignLengthFunction<O>`         | A function that takes the inputs and returns a length (written as a template value)                        |
-| `DesignLengthKey<O>`              | Input keys that pass lengths or multipliers                                                                |
-| `DesignLengthProperty`            | Design properties that take length values                                                                  |
+| Type                              | Description                                                                                                                                  |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Option<V>`                       | An option (`value`, `label?`, `disabled?`). You may add properties                                                                           |
+| `DisplayOption<V>`                | An option to show (`Option<V>` with a required `label` and `unlisted`, which tells whether it is unlisted)                                   |
+| `UnlistedPlacement`               | Where to show unlisted values (`'hidden'`, `'start'`, `'end'`)                                                                               |
+| `ValueProps<T>`                   | The main value of a display component                                                                                                        |
+| `EditableValueProps<T, TChanged>` | The main value of an input component (a controlled or uncontrolled state)                                                                    |
+| `OpenProps`                       | The open state                                                                                                                               |
+| `InputValueChangeProps`           | The notice of the text in the input                                                                                                          |
+| `MainActionProps<V>`              | The notice of the main action                                                                                                                |
+| `DisabledProps`                   | The setting that disables operation                                                                                                          |
+| `ReadOnlyProps`                   | The setting that prevents changing the value                                                                                                 |
+| `RequiredProps`                   | The setting that marks the value as required                                                                                                 |
+| `InvalidProps`                    | The setting that marks the value as invalid                                                                                                  |
+| `OptionsProps<V>`                 | The options                                                                                                                                  |
+| `UnlistedPlacementProps`          | Where to show unlisted values (`unlistedPlacement`)                                                                                          |
+| `KeepUnlistedProps`               | Whether to keep unlisted values that are no longer selected (`keepUnlisted`)                                                                 |
+| `SelectAllUnlistedProps`          | The props for how "select all" handles unlisted values (`selectAllIncludesUnlisted`)                                                         |
+| `UseDisplayOptionsResult<V>`      | The result of `useDisplayOptions`                                                                                                            |
+| `DesignDefinition`                | The design definition of a component (the properties the root and each part accept, and their states)                                        |
+| `DesignPartDefinition`            | The properties the root or a part accepts, and their states                                                                                  |
+| `Design<D>`                       | The design values passed to a component (created from the definition)                                                                        |
+| `DesignValue<T, S>`               | A design value (a single value, or an object per state)                                                                                      |
+| `DesignState`                     | The states design values are split by                                                                                                        |
+| `DesignProperty`                  | The names of design properties                                                                                                               |
+| `DesignPropertyValues`            | The design properties and the types of values they accept                                                                                    |
+| `DesignStyle`                     | The `style` of CSS variables `createDesignStyle` creates                                                                                     |
+| `DesignableComponent<D>`          | A component `withDesign` can wrap (one that takes `design` and has `designDefinition`)                                                       |
+| `DefaultDesign<C>`                | The default design values passed to `withDesign`                                                                                             |
+| `CreateDesignOptions`             | Values passed to `createDesign` that the design is created from                                                                              |
+| `DesignTemplate<D, O>`            | Design template (the same shape as design values, with color and length specs in place of values)                                            |
+| `DesignColorSpec<K>`              | A spec that creates a color (JSON-compatible data)                                                                                           |
+| `DesignColorFunction<O>`          | A function that takes the inputs and returns a color (written as a template value)                                                           |
+| `DesignColorKey<O>`               | Input keys that pass colors                                                                                                                  |
+| `DesignColorProperty`             | Design properties that take color values                                                                                                     |
+| `DesignLengthSpec<K>`             | A spec that creates a length (JSON-compatible data)                                                                                          |
+| `DesignLengthFunction<O>`         | A function that takes the inputs and returns a length (written as a template value)                                                          |
+| `DesignLengthKey<O>`              | Input keys that pass lengths or multipliers                                                                                                  |
+| `DesignLengthProperty`            | Design properties that take length values                                                                                                    |
+| `AdjustColorOptions`              | How to adjust a color, written in `adjust` of `DesignColorSpec` (a type of `@fringeworks/design-utils`)                                      |
+| `AbsoluteColor`                   | A concrete color passed to the colors of `CreateDesignOptions` (`HexColor \| FunctionalColor \| NamedColor`; a type of `@fringeworks/types`) |
+| `HexColor`                        | A hex color (`#${string}`; a type of `@fringeworks/types`)                                                                                   |
+| `FunctionalColor`                 | A color written with a color function such as `rgb()`, `hsl()`, or `oklch()` (a type of `@fringeworks/types`)                                |
+| `NamedColor`                      | CSS color names (the 148 names and `transparent`; a type of `@fringeworks/types`)                                                            |
 
 ## License
 

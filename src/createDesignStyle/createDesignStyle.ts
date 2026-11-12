@@ -1,4 +1,4 @@
-import appendUnit from '@fringeworks/design-utils/appendUnit';
+import appendUnit from '@fringeworks/design-utils/css/appendUnit';
 import { fillStyleState } from '@fringeworks/style-utils';
 import type {
   Design,

@@ -289,3 +289,16 @@ export type DesignTemplate<
     O & CreateDesignOptions
   >;
 };
+
+// 色の調整の指定の型（`DesignColorSpec` の `adjust`）。
+// 利用者が `@fringeworks/design-utils` を入れずに使えるよう、ここから export する
+export type { AdjustColorOptions } from '@fringeworks/design-utils';
+
+// 具体的な色の型（`CreateDesignOptions` の色）と、その中の型。
+// 利用者が `@fringeworks/types` を入れずに使えるよう、ここから export する
+export type {
+  AbsoluteColor,
+  FunctionalColor,
+  HexColor,
+  NamedColor,
+} from '@fringeworks/types';
