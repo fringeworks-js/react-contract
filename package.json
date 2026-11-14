@@ -1,6 +1,6 @@
 {
   "name": "@fringeworks/react-contract",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "A library some will find handy, offering the shared props and helpers that make React components swappable.",
   "keywords": [

@@ -1,3 +1,5 @@
+import type { ComponentType, HTMLAttributes } from 'react';
+
 /**
  * 選択肢
  *
@@ -221,3 +223,35 @@ export type SelectAllUnlistedProps = {
    */
   selectAllIncludesUnlisted?: boolean;
 };
+
+/**
+ * アイコンの口に組み込む部品が受け取る props
+ *
+ * アイコンの名前（`value`）と、フォント（`<span>`）・SVG（`<svg>`）のどちらにも型どおりに渡せる属性。
+ * `ref`・イベントのハンドラー・`data-*` は含めない（`ref` は要素で型が変わり、ハンドラーはアイコンを持つ部品の側で受け取れる）。
+ * react-icon の部品は、どれもこの props を受け取れる。
+ *
+ * @template V アイコンの名前の型
+ */
+export type IconSlotProps<V> = ValueProps<V> &
+  Pick<
+    HTMLAttributes<Element>,
+    | 'className'
+    | 'style'
+    | 'id'
+    | 'title'
+    | 'role'
+    | 'aria-hidden'
+    | 'aria-label'
+    | 'aria-labelledby'
+    | 'aria-describedby'
+  >;
+
+/**
+ * アイコンの口に組み込める部品（`IconSlotProps` を受け取る部品）
+ *
+ * 名前の型を問わないときは、既定の `never` のまま使う（どの名前の型の部品も代入できる）。
+ *
+ * @template V アイコンの名前の型
+ */
+export type IconComponent<V = never> = ComponentType<IconSlotProps<V>>;

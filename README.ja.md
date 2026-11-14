@@ -399,51 +399,53 @@ createDesign(
 
 ### 型
 
-| 型                                | 説明                                                                                                                 |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `Option<V>`                       | 選択肢（`value`・`label?`・`disabled?`）。プロパティを足してよい                                                     |
-| `DisplayOption<V>`                | 表示する選択肢（`Option<V>` に、必ず入る `label` と、選択肢外の値かを表す `unlisted` を足したもの）                  |
-| `UnlistedPlacement`               | 選択肢外の値を表示する位置（`'hidden'`・`'start'`・`'end'`）                                                         |
-| `ValueProps<T>`                   | 表示の部品の主な値                                                                                                   |
-| `EditableValueProps<T, TChanged>` | 入力の部品の主な値（制御・非制御の状態）                                                                             |
-| `OpenProps`                       | 開閉の状態                                                                                                           |
-| `InputValueChangeProps`           | 入力欄の文字列の通知                                                                                                 |
-| `MainActionProps<V>`              | 主な操作の通知                                                                                                       |
-| `DisabledProps`                   | 操作できなくする設定                                                                                                 |
-| `ReadOnlyProps`                   | 値を変えられなくする設定                                                                                             |
-| `RequiredProps`                   | 必須であることを示す設定                                                                                             |
-| `InvalidProps`                    | 値が正しくないことを示す設定                                                                                         |
-| `OptionsProps<V>`                 | 選択肢                                                                                                               |
-| `UnlistedPlacementProps`          | 選択肢外の値を表示する位置（`unlistedPlacement`）                                                                    |
-| `KeepUnlistedProps`               | 選ばなくなった選択肢外の値を残すか（`keepUnlisted`）                                                                 |
-| `SelectAllUnlistedProps`          | すべて選ぶでの選択肢外の値の扱いを決めるプロパティ（`selectAllIncludesUnlisted`）                                    |
-| `UseDisplayOptionsResult<V>`      | `useDisplayOptions` の戻り値                                                                                         |
-| `DesignDefinition`                | 部品のデザインの定義（ルートと部分ごとの、受け付けるプロパティと効く状態）                                           |
-| `DesignPartDefinition`            | ルートまたは部分の、受け付けるプロパティと効く状態                                                                   |
-| `Design<D>`                       | 部品に渡すデザインの値（定義から作る）                                                                               |
-| `DesignValue<T, S>`               | デザインの値（1つの値か、状態ごとのオブジェクト）                                                                    |
-| `DesignState`                     | デザインの値を分ける状態                                                                                             |
-| `DesignProperty`                  | デザインのプロパティの名前                                                                                           |
-| `DesignPropertyValues`            | デザインのプロパティと、受け付ける値の型                                                                             |
-| `DesignStyle`                     | `createDesignStyle` が作る CSS 変数の `style`                                                                        |
-| `DesignableComponent<D>`          | `withDesign` で包める部品（`design`・`fallbackDesign` を受け取り、`designDefinition` を持つもの）                    |
-| `FallbackDesign<C>`               | `withDesign` に渡す、アプリで共通のデザインの値                                                                      |
-| `CreateEffectiveDesignOptions<D>` | `createEffectiveDesign` のオプション                                                                                 |
-| `CreateDesignOptions`             | `createDesign` に渡す、デザインの元になる値                                                                          |
-| `DesignTemplate<D, O>`            | デザインの割り当て（デザインの値と同じ形で、値の所に色・長さを作る指定を書いたもの）                                 |
-| `DesignColorSpec<K>`              | 色を作る指定（JSON にできるデータ）                                                                                  |
-| `DesignColorFunction<O>`          | 入力を受け取って色を返す関数（割り当ての値に書く）                                                                   |
-| `DesignColorKey<O>`               | 入力のキーのうち、色を渡すもの                                                                                       |
-| `DesignColorProperty`             | 色の値を受け付けるデザインのプロパティ                                                                               |
-| `DesignLengthSpec<K>`             | 長さを作る指定（JSON にできるデータ）                                                                                |
-| `DesignLengthFunction<O>`         | 入力を受け取って長さを返す関数（割り当ての値に書く）                                                                 |
-| `DesignLengthKey<O>`              | 入力のキーのうち、長さや倍率を渡すもの                                                                               |
-| `DesignLengthProperty`            | 長さの値を受け付けるデザインのプロパティ                                                                             |
-| `AdjustColorOptions`              | `DesignColorSpec` の `adjust` に書く、色の調整の指定（`@fringeworks/design-utils` の型）                             |
-| `AbsoluteColor`                   | `CreateDesignOptions` の色に渡す具体的な色（`HexColor \| FunctionalColor \| NamedColor`。`@fringeworks/types` の型） |
-| `HexColor`                        | 16進数の色（`#${string}`。`@fringeworks/types` の型）                                                                |
-| `FunctionalColor`                 | `rgb()`・`hsl()`・`oklch()` などの色の関数で書いた色（`@fringeworks/types` の型）                                    |
-| `NamedColor`                      | CSS の色の名前（148 個の名前と `transparent`。`@fringeworks/types` の型）                                            |
+| 型                                | 説明                                                                                                                                                                                                           |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Option<V>`                       | 選択肢（`value`・`label?`・`disabled?`）。プロパティを足してよい                                                                                                                                               |
+| `DisplayOption<V>`                | 表示する選択肢（`Option<V>` に、必ず入る `label` と、選択肢外の値かを表す `unlisted` を足したもの）                                                                                                            |
+| `UnlistedPlacement`               | 選択肢外の値を表示する位置（`'hidden'`・`'start'`・`'end'`）                                                                                                                                                   |
+| `ValueProps<T>`                   | 表示の部品の主な値                                                                                                                                                                                             |
+| `EditableValueProps<T, TChanged>` | 入力の部品の主な値（制御・非制御の状態）                                                                                                                                                                       |
+| `OpenProps`                       | 開閉の状態                                                                                                                                                                                                     |
+| `InputValueChangeProps`           | 入力欄の文字列の通知                                                                                                                                                                                           |
+| `MainActionProps<V>`              | 主な操作の通知                                                                                                                                                                                                 |
+| `DisabledProps`                   | 操作できなくする設定                                                                                                                                                                                           |
+| `ReadOnlyProps`                   | 値を変えられなくする設定                                                                                                                                                                                       |
+| `RequiredProps`                   | 必須であることを示す設定                                                                                                                                                                                       |
+| `InvalidProps`                    | 値が正しくないことを示す設定                                                                                                                                                                                   |
+| `OptionsProps<V>`                 | 選択肢                                                                                                                                                                                                         |
+| `UnlistedPlacementProps`          | 選択肢外の値を表示する位置（`unlistedPlacement`）                                                                                                                                                              |
+| `KeepUnlistedProps`               | 選ばなくなった選択肢外の値を残すか（`keepUnlisted`）                                                                                                                                                           |
+| `SelectAllUnlistedProps`          | すべて選ぶでの選択肢外の値の扱いを決めるプロパティ（`selectAllIncludesUnlisted`）                                                                                                                              |
+| `IconSlotProps<V>`                | アイコンの口に組み込む部品が受け取る props（`value` と、`<span>`・`<svg>` のどちらにも渡せる `className`・`style`・`id`・`title`・`role`・`aria-hidden`・`aria-label`・`aria-labelledby`・`aria-describedby`） |
+| `IconComponent<V>`                | アイコンの口に組み込める部品（`IconSlotProps<V>` を受け取る部品）。`V` を省略すると、どの名前の型の部品も代入できる                                                                                            |
+| `UseDisplayOptionsResult<V>`      | `useDisplayOptions` の戻り値                                                                                                                                                                                   |
+| `DesignDefinition`                | 部品のデザインの定義（ルートと部分ごとの、受け付けるプロパティと効く状態）                                                                                                                                     |
+| `DesignPartDefinition`            | ルートまたは部分の、受け付けるプロパティと効く状態                                                                                                                                                             |
+| `Design<D>`                       | 部品に渡すデザインの値（定義から作る）                                                                                                                                                                         |
+| `DesignValue<T, S>`               | デザインの値（1つの値か、状態ごとのオブジェクト）                                                                                                                                                              |
+| `DesignState`                     | デザインの値を分ける状態                                                                                                                                                                                       |
+| `DesignProperty`                  | デザインのプロパティの名前                                                                                                                                                                                     |
+| `DesignPropertyValues`            | デザインのプロパティと、受け付ける値の型                                                                                                                                                                       |
+| `DesignStyle`                     | `createDesignStyle` が作る CSS 変数の `style`                                                                                                                                                                  |
+| `DesignableComponent<D>`          | `withDesign` で包める部品（`design`・`fallbackDesign` を受け取り、`designDefinition` を持つもの）                                                                                                              |
+| `FallbackDesign<C>`               | `withDesign` に渡す、アプリで共通のデザインの値                                                                                                                                                                |
+| `CreateEffectiveDesignOptions<D>` | `createEffectiveDesign` のオプション                                                                                                                                                                           |
+| `CreateDesignOptions`             | `createDesign` に渡す、デザインの元になる値                                                                                                                                                                    |
+| `DesignTemplate<D, O>`            | デザインの割り当て（デザインの値と同じ形で、値の所に色・長さを作る指定を書いたもの）                                                                                                                           |
+| `DesignColorSpec<K>`              | 色を作る指定（JSON にできるデータ）                                                                                                                                                                            |
+| `DesignColorFunction<O>`          | 入力を受け取って色を返す関数（割り当ての値に書く）                                                                                                                                                             |
+| `DesignColorKey<O>`               | 入力のキーのうち、色を渡すもの                                                                                                                                                                                 |
+| `DesignColorProperty`             | 色の値を受け付けるデザインのプロパティ                                                                                                                                                                         |
+| `DesignLengthSpec<K>`             | 長さを作る指定（JSON にできるデータ）                                                                                                                                                                          |
+| `DesignLengthFunction<O>`         | 入力を受け取って長さを返す関数（割り当ての値に書く）                                                                                                                                                           |
+| `DesignLengthKey<O>`              | 入力のキーのうち、長さや倍率を渡すもの                                                                                                                                                                         |
+| `DesignLengthProperty`            | 長さの値を受け付けるデザインのプロパティ                                                                                                                                                                       |
+| `AdjustColorOptions`              | `DesignColorSpec` の `adjust` に書く、色の調整の指定（`@fringeworks/design-utils` の型）                                                                                                                       |
+| `AbsoluteColor`                   | `CreateDesignOptions` の色に渡す具体的な色（`HexColor \| FunctionalColor \| NamedColor`。`@fringeworks/types` の型）                                                                                           |
+| `HexColor`                        | 16進数の色（`#${string}`。`@fringeworks/types` の型）                                                                                                                                                          |
+| `FunctionalColor`                 | `rgb()`・`hsl()`・`oklch()` などの色の関数で書いた色（`@fringeworks/types` の型）                                                                                                                              |
+| `NamedColor`                      | CSS の色の名前（148 個の名前と `transparent`。`@fringeworks/types` の型）                                                                                                                                      |
 
 ## ライセンス
 
