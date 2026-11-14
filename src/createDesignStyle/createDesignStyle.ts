@@ -17,6 +17,9 @@ const UNITLESS: ReadonlySet<DesignProperty> = new Set([
   'opacity',
   'fontWeight',
   'lineHeight',
+  'filled',
+  'grade',
+  'opticalSize',
 ]);
 
 type AnyValue = DesignValue<string | number, DesignState>;

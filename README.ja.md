@@ -196,7 +196,8 @@ createDesignStyle('frg-checkbox', definition, {
 - CSS 変数の名前は `--<prefix>[-<部分>]-<プロパティ>[-<状態>]` です。定義にあるプロパティだけを書き、指定していないもの（値が `undefined` のものを含む）は書きません。
 - 1つの値は、そのプロパティで効くすべての状態の変数に書きます（`'red'` なら `-checked` なども `red`）。状態ごとのオブジェクトは、書いた状態の変数だけを書きます。省略した状態は、部品の CSS の既定の値のままです（`base` の値を引き継ぎません）。
 - 状態は `hover`・`focus`（`:focus-visible`）・`active`・`open`・`checked`・`indeterminate`・`readOnly`・`invalid`・`disabled` です。重なったときは、この順で後のものが勝ちます。
-- 長さの数値には px を付け、`opacity`・`fontWeight`・`lineHeight` の数値は単位なしで書きます。どの値にも `var(--…)` の文字列を渡せるので、テーマの仕組みの CSS 変数につなげます。
+- 例外として、CSS のプロパティが無い可変フォントの軸に `filled`（塗り。0〜1）・`grade`（グレード）・`opticalSize`（光学サイズ）の名前を使います（アイコンのフォントの Material Symbols など）。
+- 長さの数値には px を付け、`opacity`・`fontWeight`・`lineHeight`・`filled`・`grade`・`opticalSize` の数値は単位なしで書きます。どの値にも `var(--…)` の文字列を渡せるので、テーマの仕組みの CSS 変数につなげます。
 
 ### `mergeDesign`
 

@@ -30,7 +30,13 @@ export type DesignState =
  * - `size`: `width` と `height`
  * - `paddingX`・`paddingY`・`marginX`・`marginY`: 左右・上下の `padding`・`margin`
  *
- * 長さ（`string | number`）の数値は px、`opacity`・`fontWeight`・`lineHeight` の数値は単位なしで扱う。
+ * 例外として、CSS のプロパティが無い可変フォントの軸に、次の名前を使う（アイコンのフォントの Material Symbols など）。
+ *
+ * - `filled`: 塗り（`FILL` の軸。0〜1）
+ * - `grade`: グレード（`GRAD` の軸）
+ * - `opticalSize`: 光学サイズ（`opsz` の軸）
+ *
+ * 長さ（`string | number`）の数値は px、`opacity`・`fontWeight`・`lineHeight`・`filled`・`grade`・`opticalSize` の数値は単位なしで扱う。
  * どの値にも `var(--…)` の文字列を渡せる（テーマの仕組みの CSS 変数につなぐときなど）。
  */
 export type DesignPropertyValues = {
@@ -51,6 +57,9 @@ export type DesignPropertyValues = {
   opacity: string | number;
   fontWeight: string | number;
   lineHeight: string | number;
+  filled: string | number;
+  grade: string | number;
+  opticalSize: string | number;
 };
 
 /**

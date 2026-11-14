@@ -196,7 +196,8 @@ Design values are written along three axes, the same way for every component.
 - CSS variable names are `--<prefix>[-<part>]-<property>[-<state>]`. Only properties in the definition are written, and unspecified ones (including `undefined` values) are not.
 - A single value is written to the variables of every state the property has (`'red'` also sets `-checked` and so on to `red`). An object per state writes only the states it has. Omitted states keep the component's CSS defaults (they do not inherit `base`).
 - The states are `hover`, `focus` (`:focus-visible`), `active`, `open`, `checked`, `indeterminate`, `readOnly`, `invalid`, and `disabled`. When several apply, a later one in this order wins.
-- Length numbers get px; numbers for `opacity`, `fontWeight`, and `lineHeight` are written without a unit. Every value also accepts a `var(--…)` string, so you can connect it to the CSS variables of a theme system.
+- As an exception, the variable font axes that have no CSS property use the names `filled` (fill, 0–1), `grade`, and `opticalSize` (icon fonts such as Material Symbols).
+- Length numbers get px; numbers for `opacity`, `fontWeight`, `lineHeight`, `filled`, `grade`, and `opticalSize` are written without a unit. Every value also accepts a `var(--…)` string, so you can connect it to the CSS variables of a theme system.
 
 ### `mergeDesign`
 

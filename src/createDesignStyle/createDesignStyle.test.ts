@@ -69,6 +69,21 @@ describe('createDesignStyle', () => {
     });
   });
 
+  it('可変フォントの軸の数値は単位なし', () => {
+    expect(
+      createDesignStyle(
+        'frg-materialsymbol',
+        { properties: { filled: ['hover'], grade: [], opticalSize: [] } },
+        { filled: { base: 0, hover: 1 }, grade: -25, opticalSize: 48 },
+      ),
+    ).toEqual({
+      '--frg-materialsymbol-filled': '0',
+      '--frg-materialsymbol-filled-hover': '1',
+      '--frg-materialsymbol-grade': '-25',
+      '--frg-materialsymbol-opticalSize': '48',
+    });
+  });
+
   it('var(--…) の文字列もそのまま書く', () => {
     expect(
       createDesignStyle('frg-checkbox', definition, {
