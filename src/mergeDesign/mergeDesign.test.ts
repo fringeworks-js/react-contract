@@ -13,13 +13,13 @@ const definition = {
 } as const satisfies DesignDefinition;
 
 describe('mergeDesign', () => {
-  it('指定していないプロパティを、defaultDesign で補う', () => {
+  it('指定していないプロパティを、fallbackDesign で補う', () => {
     expect(
       mergeDesign(definition, { gap: 8 }, { gap: 4, indicator: { size: 16 } }),
     ).toEqual({ gap: 8, indicator: { size: 16 } });
   });
 
-  it('状態ごとのオブジェクトで省略した状態を、defaultDesign で補う', () => {
+  it('状態ごとのオブジェクトで省略した状態を、fallbackDesign で補う', () => {
     expect(
       mergeDesign(
         definition,
@@ -31,7 +31,7 @@ describe('mergeDesign', () => {
     });
   });
 
-  it('defaultDesign の1つの値は、省略した状態すべてを補う', () => {
+  it('fallbackDesign の1つの値は、省略した状態すべてを補う', () => {
     expect(
       mergeDesign(
         definition,
@@ -45,7 +45,7 @@ describe('mergeDesign', () => {
     });
   });
 
-  it('design の1つの値は、defaultDesign をすべての状態で上書きする', () => {
+  it('design の1つの値は、fallbackDesign をすべての状態で上書きする', () => {
     expect(
       mergeDesign(
         definition,

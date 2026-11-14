@@ -33,7 +33,7 @@ function writePart(
   base: string,
   definition: DesignPartDefinition | undefined,
   design: AnyPartDesign | undefined,
-  defaultDesign: AnyPartDesign | undefined,
+  fallbackDesign: AnyPartDesign | undefined,
 ) {
   if (definition === undefined) {
     return;
@@ -45,7 +45,7 @@ function writePart(
     const filled = fillStyleState(
       design?.[property],
       states,
-      defaultDesign?.[property],
+      fallbackDesign?.[property],
     );
     for (const [state, value] of Object.entries(filled) as [
       'base' | DesignState,
@@ -71,7 +71,7 @@ function writePart(
  *
  * - 1つの値は、そのプロパティで効くすべての状態の変数に書く（`'red'` なら `-hover` なども `red`）
  * - 状態ごとのオブジェクトは、書いた状態の変数だけを書く（省略した状態は、部品の CSS の既定の値のまま）
- * - `defaultDesign` を渡すと、`design` で指定していないプロパティ・状態を、その値で補う（アプリで決めた既定の値など）
+ * - `fallbackDesign` を渡すと、`design` で指定していないプロパティ・状態を、その値で補う（アプリで決めた既定の値など）
  * - 長さの数値は px を付け、`opacity`・`fontWeight`・`lineHeight` の数値は単位なしで書く
  *
  * @example
@@ -83,24 +83,24 @@ function writePart(
  * @param prefix CSS 変数の名前の、部分より前（`frg-checkbox` など。`--` は付けない）
  * @param definition 部品のデザインの定義
  * @param design デザインの値
- * @param defaultDesign `design` で指定していないものを補う、デザインの値
+ * @param fallbackDesign `design` で指定していないものを補う、デザインの値
  * @returns CSS 変数の `style`（要素の `style` に重ねる）
  */
 export default function createDesignStyle<D extends DesignDefinition>(
   prefix: string,
   definition: D,
   design?: Design<D>,
-  defaultDesign?: Design<D>,
+  fallbackDesign?: Design<D>,
 ): DesignStyle {
   const style: DesignStyle = {};
   const values = design as Record<string, unknown> | undefined;
-  const defaults = defaultDesign as Record<string, unknown> | undefined;
+  const fallbacks = fallbackDesign as Record<string, unknown> | undefined;
   writePart(
     style,
     prefix,
     definition.properties,
     values as AnyPartDesign | undefined,
-    defaults as AnyPartDesign | undefined,
+    fallbacks as AnyPartDesign | undefined,
   );
   for (const [part, partDefinition] of Object.entries(definition.parts ?? {})) {
     writePart(
@@ -108,7 +108,7 @@ export default function createDesignStyle<D extends DesignDefinition>(
       `${prefix}-${part}`,
       partDefinition,
       values?.[part] as AnyPartDesign | undefined,
-      defaults?.[part] as AnyPartDesign | undefined,
+      fallbacks?.[part] as AnyPartDesign | undefined,
     );
   }
   return style;

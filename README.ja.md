@@ -60,15 +60,16 @@ type MultiSelectProps<V> = OptionsProps<V> &
 
 ## API
 
-| 名前                                                             | 説明                                                                 |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `useDisplayOptions(options, value, props?)`                      | 選んだ値に合わせて、表示する選択肢を作る                             |
-| `createDisplayOptions(options, unlistedValues, placement?)`      | 表示する選択肢を作る（React を使わない版）                           |
-| `createSelectedOptions(options, value, placement?)`              | 選んだ値の表示する選択肢を作る（選んだ値を表示する部品のためのもの） |
-| `createDesignStyle(prefix, definition, design?, defaultDesign?)` | デザインの値を、部品の CSS 変数の `style` にする                     |
-| `mergeDesign(definition, design?, defaultDesign?)`               | 2つのデザインの値を重ねる                                            |
-| `withDesign(Component, design)`                                  | デザインの既定の値を決めた部品を作る HOC                             |
-| `createDesign(definition, template, options)`                    | メインの色などと割り当てから、デザインの値を作る                     |
+| 名前                                                              | 説明                                                                 |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `useDisplayOptions(options, value, props?)`                       | 選んだ値に合わせて、表示する選択肢を作る                             |
+| `createDisplayOptions(options, unlistedValues, placement?)`       | 表示する選択肢を作る（React を使わない版）                           |
+| `createSelectedOptions(options, value, placement?)`               | 選んだ値の表示する選択肢を作る（選んだ値を表示する部品のためのもの） |
+| `createDesignStyle(prefix, definition, design?, fallbackDesign?)` | デザインの値を、部品の CSS 変数の `style` にする                     |
+| `mergeDesign(definition, design?, fallbackDesign?)`               | 2つのデザインの値を重ねる                                            |
+| `createEffectiveDesign(definition, options)`                      | 部品が受け取ったデザインの値を重ねて、部品に効くデザインの値を作る   |
+| `withDesign(Component, design)`                                   | アプリで共通のデザインの値を決めた部品を作る HOC                     |
+| `createDesign(definition, template, options)`                     | メインの色などと割り当てから、デザインの値を作る                     |
 
 ### `useDisplayOptions`
 
@@ -150,7 +151,7 @@ createDesignStyle<D extends DesignDefinition>(
   prefix: string,
   definition: D,
   design?: Design<D>,
-  defaultDesign?: Design<D>,
+  fallbackDesign?: Design<D>,
 ): DesignStyle
 ```
 
@@ -178,12 +179,12 @@ createDesignStyle('frg-checkbox', definition, {
 // }
 ```
 
-| 引数             | 型          | 説明                                                                        |
-| ---------------- | ----------- | --------------------------------------------------------------------------- |
-| `prefix`         | `string`    | CSS 変数の名前の、部分より前（`frg-checkbox` など。`--` は付けない）        |
-| `definition`     | `D`         | 部品のデザインの定義（受け付けるプロパティと、効く状態）                    |
-| `design?`        | `Design<D>` | デザインの値                                                                |
-| `defaultDesign?` | `Design<D>` | `design` で指定していないプロパティ・状態を補う値（アプリで決めた既定など） |
+| 引数              | 型          | 説明                                                                                                             |
+| ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| `prefix`          | `string`    | CSS 変数の名前の、部分より前（`frg-checkbox` など。`--` は付けない）                                             |
+| `definition`      | `D`         | 部品のデザインの定義（受け付けるプロパティと、効く状態）                                                         |
+| `design?`         | `Design<D>` | デザインの値                                                                                                     |
+| `fallbackDesign?` | `Design<D>` | `design` で指定していないプロパティ・状態を補う値。部品のプロパティも重ねるときは `createEffectiveDesign` を使う |
 
 デザインの値は、次の3つの軸で書きます。どの部品でも同じ書き方です。
 
@@ -205,11 +206,11 @@ createDesignStyle('frg-checkbox', definition, {
 mergeDesign<D extends DesignDefinition>(
   definition: D,
   design?: Design<D>,
-  defaultDesign?: Design<D>,
+  fallbackDesign?: Design<D>,
 ): Design<D>
 ```
 
-2つのデザインの値を重ねます。`design` で指定していないプロパティ・状態を、`defaultDesign` の値で補います（`createDesignStyle` の `defaultDesign` と同じ規則）。`design` の1つの値は `defaultDesign` の値をすべての状態で上書きし、状態ごとのオブジェクトは省略した状態を `defaultDesign` で補います。
+2つのデザインの値を重ねます。`design` で指定していないプロパティ・状態を、`fallbackDesign` の値で補います（`createDesignStyle` の `fallbackDesign` と同じ規則）。`design` の1つの値は `fallbackDesign` の値をすべての状態で上書きし、状態ごとのオブジェクトは省略した状態を `fallbackDesign` で補います。
 
 ```ts
 mergeDesign(
@@ -223,13 +224,67 @@ mergeDesign(
 // → { gap: 4, indicator: { backgroundColor: { base: 'blue', checked: 'pink' } } }
 ```
 
+### `createEffectiveDesign`
+
+```ts
+createEffectiveDesign<D extends DesignDefinition>(
+  definition: D,
+  options: CreateEffectiveDesignOptions<D>,
+): Design<D>
+```
+
+部品が受け取った、強さの違うデザインの値を重ねて、部品に効くデザインの値を作ります。部品は受け取ったものをそのまま渡せばよく、重ねる順を知らなくて済みます。結果は `createDesignStyle` に渡します。
+
+| オプション        | 型          | 説明                                                                                                                                        |
+| ----------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `design?`         | `Design<D>` | 使う場所で渡したデザインの値（部品の `design` プロパティ）。いちばん強い                                                                    |
+| `propsDesign?`    | `Design<D>` | 部品のプロパティのうち、デザインの値と同じことをするもの（react-icon-material-symbols の `fontWeight` など）から作った値。1つの値として書く |
+| `fallbackDesign?` | `Design<D>` | アプリで共通のデザインの値（部品の `fallbackDesign` プロパティ。`withDesign` が渡す）。いちばん弱い                                         |
+
+`design` ＞ `propsDesign` ＞ `fallbackDesign` の順に重ね、強い方で指定していないプロパティ・状態を弱い方の値で補います（重ね方は `mergeDesign`）。
+
+- 手間をかけて書いた方を優先します。プロパティ（`fontWeight={300}`）より、`design` の状態ごとの値（`{ fontWeight: { hover: 700 } }`）が強くなります。
+- 層が違うときは、使う場所に近い方を優先します。アプリで共通の値は、使う場所のプロパティより弱くなります。
+- `propsDesign` の値が `undefined` のプロパティは、指定しなかったものとして扱います。
+
+```ts
+createEffectiveDesign(definition, {
+  design: { fontWeight: { hover: 700 } },
+  propsDesign: { fontWeight: 300 },
+  fallbackDesign: { fontWeight: 500, filled: 1 },
+});
+// → { fontWeight: { base: 300, hover: 700 }, filled: 1 }
+```
+
+部品では、次のように使います。
+
+```tsx
+function Box({ design, fallbackDesign, gap, ...props }: BoxProps) {
+  return (
+    <div
+      {...props}
+      style={createDesignStyle(
+        'my-box',
+        boxDesignDefinition,
+        createEffectiveDesign(boxDesignDefinition, {
+          design,
+          propsDesign: { gap },
+          fallbackDesign,
+        }),
+      )}
+    />
+  );
+}
+Box.designDefinition = boxDesignDefinition;
+```
+
 ### `withDesign`
 
 ```ts
-withDesign<C extends DesignableComponent>(Component: C, design: DefaultDesign<C>): C
+withDesign<C extends DesignableComponent>(Component: C, design: FallbackDesign<C>): C
 ```
 
-デザインの既定の値を決めた部品を作ります。使う場所で渡した `design` で指定していないプロパティ・状態を、この関数に渡した値で補って（`mergeDesign`）、部品の `design` に渡します。アプリで1回作り、画面ではそのまま置きます。
+アプリで共通のデザインの値を決めた部品を作ります。この関数に渡した値は、部品の `fallbackDesign` プロパティで渡します。使う場所で渡した `design` には混ぜないので、部品は `createEffectiveDesign` で、使う場所の値をアプリで共通の値より優先できます。アプリで1回作り、画面ではそのまま置きます。
 
 ```tsx
 // アプリで1回だけ作る
@@ -237,12 +292,12 @@ export const AppCheckbox = withDesign(Checkbox, {
   indicator: { backgroundColor: { checked: 'var(--brand-accent)' } },
 });
 
-// 画面ではそのまま置く。使う場所の design は、既定の値より優先する
+// 画面ではそのまま置く。使う場所の design は、アプリで共通の値より優先する
 <AppCheckbox design={{ gap: 4 }}>同意する</AppCheckbox>;
 ```
 
-- 包む部品は、`design` プロパティでデザインの値を受け取り、静的なプロパティ `designDefinition` にデザインの定義を持つものです（`@fringeworks/react-components` の部品はどれも持っています）。自作の部品も、`designDefinition` を付ければ包めます。
-- 重ねて使えます。外側の `withDesign` ほど優先します（使う場所の `design` > 外側 > 内側 > 部品の CSS の既定の値）。
+- 包む部品は、`design`・`fallbackDesign` プロパティでデザインの値を受け取り（`createEffectiveDesign` で重ねる）、静的なプロパティ `designDefinition` にデザインの定義を持つものです（`@fringeworks/react-components` の部品はどれも持っています）。自作の部品も、`designDefinition` を付ければ包めます。
+- 重ねて使えます。使う場所で渡した `fallbackDesign` > 外側の `withDesign` > 内側の `withDesign` の順に優先し、まとめて `fallbackDesign` で渡します。部品の中では、使う場所の `design` > 部品のプロパティ > `fallbackDesign` > 部品の CSS の既定の値の順になります。
 - 作ったコンポーネントは、包んだ部品と同じ型で返します。ジェネリックな部品（`Table` など）の型引数も残ります。`designDefinition` も引き継ぎます。
 - Context は使わず、作ったコンポーネントの中で値を重ねます。どの値が効いているかは、コードからたどれます。
 
@@ -371,8 +426,9 @@ createDesign(
 | `DesignProperty`                  | デザインのプロパティの名前                                                                                           |
 | `DesignPropertyValues`            | デザインのプロパティと、受け付ける値の型                                                                             |
 | `DesignStyle`                     | `createDesignStyle` が作る CSS 変数の `style`                                                                        |
-| `DesignableComponent<D>`          | `withDesign` で包める部品（`design` を受け取り、`designDefinition` を持つもの）                                      |
-| `DefaultDesign<C>`                | `withDesign` に渡す、既定のデザインの値                                                                              |
+| `DesignableComponent<D>`          | `withDesign` で包める部品（`design`・`fallbackDesign` を受け取り、`designDefinition` を持つもの）                    |
+| `FallbackDesign<C>`               | `withDesign` に渡す、アプリで共通のデザインの値                                                                      |
+| `CreateEffectiveDesignOptions<D>` | `createEffectiveDesign` のオプション                                                                                 |
 | `CreateDesignOptions`             | `createDesign` に渡す、デザインの元になる値                                                                          |
 | `DesignTemplate<D, O>`            | デザインの割り当て（デザインの値と同じ形で、値の所に色・長さを作る指定を書いたもの）                                 |
 | `DesignColorSpec<K>`              | 色を作る指定（JSON にできるデータ）                                                                                  |

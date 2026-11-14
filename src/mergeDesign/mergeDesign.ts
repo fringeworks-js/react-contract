@@ -17,11 +17,11 @@ type AnyPartDesign = Partial<Record<DesignProperty, AnyValue>>;
 function mergePart(
   definition: DesignPartDefinition | undefined,
   design: AnyPartDesign | undefined,
-  defaultDesign: AnyPartDesign | undefined,
+  fallbackDesign: AnyPartDesign | undefined,
 ): AnyPartDesign | undefined {
   if (
     definition === undefined ||
-    (design === undefined && defaultDesign === undefined)
+    (design === undefined && fallbackDesign === undefined)
   ) {
     return undefined;
   }
@@ -31,7 +31,7 @@ function mergePart(
     readonly DesignState[],
   ][]) {
     const value = design?.[property];
-    const defaultValue = defaultDesign?.[property];
+    const defaultValue = fallbackDesign?.[property];
     if (value === undefined) {
       if (defaultValue !== undefined) {
         merged[property] = defaultValue;
@@ -53,11 +53,11 @@ function mergePart(
 /**
  * 2つのデザインの値を重ねる
  *
- * `design` で指定していないプロパティ・状態を、`defaultDesign` の値で補う。
- * `createDesignStyle` の `defaultDesign` と同じ規則で、定義にあるプロパティだけを扱う。
+ * `design` で指定していないプロパティ・状態を、`fallbackDesign` の値で補う。
+ * `createDesignStyle` の `fallbackDesign` と同じ規則で、定義にあるプロパティだけを扱う。
  *
- * - `design` の1つの値は、`defaultDesign` の値をすべての状態で上書きする
- * - `design` の状態ごとのオブジェクトは、省略した状態を `defaultDesign` で補う
+ * - `design` の1つの値は、`fallbackDesign` の値をすべての状態で上書きする
+ * - `design` の状態ごとのオブジェクトは、省略した状態を `fallbackDesign` で補う
  *
  * @example
  * mergeDesign(definition, { indicator: { backgroundColor: { base: 'blue' } } }, {
@@ -68,28 +68,28 @@ function mergePart(
  *
  * @param definition 部品のデザインの定義
  * @param design 優先するデザインの値
- * @param defaultDesign `design` で指定していないものを補う、デザインの値
+ * @param fallbackDesign `design` で指定していないものを補う、デザインの値
  * @returns 重ねたデザインの値
  */
 export default function mergeDesign<D extends DesignDefinition>(
   definition: D,
   design?: Design<D>,
-  defaultDesign?: Design<D>,
+  fallbackDesign?: Design<D>,
 ): Design<D> {
   const values = design as Record<string, unknown> | undefined;
-  const defaults = defaultDesign as Record<string, unknown> | undefined;
+  const fallbacks = fallbackDesign as Record<string, unknown> | undefined;
   const merged: Record<string, unknown> = {
     ...mergePart(
       definition.properties,
       values as AnyPartDesign | undefined,
-      defaults as AnyPartDesign | undefined,
+      fallbacks as AnyPartDesign | undefined,
     ),
   };
   for (const [part, partDefinition] of Object.entries(definition.parts ?? {})) {
     const partDesign = mergePart(
       partDefinition,
       values?.[part] as AnyPartDesign | undefined,
-      defaults?.[part] as AnyPartDesign | undefined,
+      fallbacks?.[part] as AnyPartDesign | undefined,
     );
     if (partDesign !== undefined) {
       merged[part] = partDesign;

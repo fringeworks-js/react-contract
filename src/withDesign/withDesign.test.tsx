@@ -12,14 +12,15 @@ const definition = {
 type BoxProps<T> = {
   value: T;
   design?: Design<typeof definition>;
+  fallbackDesign?: Design<typeof definition>;
 };
 
-function Box<T>({ value, design }: BoxProps<T>) {
+function Box<T>({ value, design, fallbackDesign }: BoxProps<T>) {
   return (
     <div
       data-testid="box"
       data-value={String(value)}
-      style={createDesignStyle('box', definition, design)}
+      style={createDesignStyle('box', definition, design, fallbackDesign)}
     />
   );
 }
@@ -59,6 +60,32 @@ describe('withDesign', () => {
     });
     const DialogBox = withDesign(AppBox, { gap: 8 });
     render(<DialogBox value={1} />);
+    expect(getStyle('--box-gap')).toBe('8px');
+    expect(getStyle('--box-mark-backgroundColor')).toBe('red');
+  });
+
+  it('使う場所の design には混ぜず、fallbackDesign で渡す', () => {
+    const seen: unknown[] = [];
+    function Probe(props: BoxProps<number>) {
+      seen.push(props);
+      return null;
+    }
+    Probe.designDefinition = definition;
+    const AppProbe = withDesign(Probe, { gap: 4 });
+    render(<AppProbe value={1} design={{ gap: 8 }} />);
+    expect(seen[0]).toEqual({
+      value: 1,
+      design: { gap: 8 },
+      fallbackDesign: { gap: 4 },
+    });
+  });
+
+  it('使う場所で渡した fallbackDesign を、withDesign の値より優先する', () => {
+    const AppBox = withDesign(Box, {
+      gap: 4,
+      mark: { backgroundColor: 'red' },
+    });
+    render(<AppBox value={1} fallbackDesign={{ gap: 8 }} />);
     expect(getStyle('--box-gap')).toBe('8px');
     expect(getStyle('--box-mark-backgroundColor')).toBe('red');
   });

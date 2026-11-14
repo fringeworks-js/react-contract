@@ -92,7 +92,7 @@ describe('createDesignStyle', () => {
     ).toEqual({ '--frg-checkbox-label-color': 'var(--brand-text)' });
   });
 
-  it('defaultDesign で、指定していないプロパティ・状態を補う', () => {
+  it('fallbackDesign で、指定していないプロパティ・状態を補う', () => {
     expect(
       createDesignStyle(
         'frg-checkbox',
@@ -110,7 +110,7 @@ describe('createDesignStyle', () => {
     });
   });
 
-  it('1つの値は、defaultDesign の状態ごとの値も上書きする', () => {
+  it('1つの値は、fallbackDesign の状態ごとの値も上書きする', () => {
     expect(
       createDesignStyle(
         'frg-checkbox',

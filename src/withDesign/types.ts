@@ -4,7 +4,7 @@ import type { Design, DesignDefinition } from '../createDesignStyle';
 /**
  * `withDesign` で包める部品
  *
- * `design` プロパティでデザインの値を受け取り、静的なプロパティ `designDefinition` にデザインの定義を持つ部品。
+ * `design`・`fallbackDesign` プロパティでデザインの値を受け取り、静的なプロパティ `designDefinition` にデザインの定義を持つ部品。
  *
  * @template D 部品のデザインの定義
  */
@@ -19,10 +19,10 @@ export type DesignableComponent<D extends DesignDefinition = DesignDefinition> =
   };
 
 /**
- * `withDesign` に渡す、既定のデザインの値
+ * `withDesign` に渡す、アプリで共通のデザインの値（部品の `fallbackDesign` プロパティで渡す）
  *
  * @template C 包む部品
  */
-export type DefaultDesign<C extends DesignableComponent> = Design<
+export type FallbackDesign<C extends DesignableComponent> = Design<
   C['designDefinition']
 >;

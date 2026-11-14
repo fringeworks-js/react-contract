@@ -60,15 +60,16 @@ type MultiSelectProps<V> = OptionsProps<V> &
 
 ## API
 
-| Name                                                             | Description                                                                                            |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `useDisplayOptions(options, value, props?)`                      | Creates the options to show for the selected values                                                    |
-| `createDisplayOptions(options, unlistedValues, placement?)`      | Creates the options to show (without React)                                                            |
-| `createSelectedOptions(options, value, placement?)`              | Creates the options to show for the selected values only (for components that display selected values) |
-| `createDesignStyle(prefix, definition, design?, defaultDesign?)` | Turns design values into a `style` of the component's CSS variables                                    |
-| `mergeDesign(definition, design?, defaultDesign?)`               | Merges two design values                                                                               |
-| `withDesign(Component, design)`                                  | An HOC that creates a component with default design values                                             |
-| `createDesign(definition, template, options)`                    | Creates design values from inputs such as a primary color and a template                               |
+| Name                                                              | Description                                                                                            |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `useDisplayOptions(options, value, props?)`                       | Creates the options to show for the selected values                                                    |
+| `createDisplayOptions(options, unlistedValues, placement?)`       | Creates the options to show (without React)                                                            |
+| `createSelectedOptions(options, value, placement?)`               | Creates the options to show for the selected values only (for components that display selected values) |
+| `createDesignStyle(prefix, definition, design?, fallbackDesign?)` | Turns design values into a `style` of the component's CSS variables                                    |
+| `mergeDesign(definition, design?, fallbackDesign?)`               | Merges two design values                                                                               |
+| `createEffectiveDesign(definition, options)`                      | Merges the design values a component received into the design values that apply to it                  |
+| `withDesign(Component, design)`                                   | An HOC that creates a component with app-wide design values                                            |
+| `createDesign(definition, template, options)`                     | Creates design values from inputs such as a primary color and a template                               |
 
 ### `useDisplayOptions`
 
@@ -150,7 +151,7 @@ createDesignStyle<D extends DesignDefinition>(
   prefix: string,
   definition: D,
   design?: Design<D>,
-  defaultDesign?: Design<D>,
+  fallbackDesign?: Design<D>,
 ): DesignStyle
 ```
 
@@ -178,12 +179,12 @@ createDesignStyle('frg-checkbox', definition, {
 // }
 ```
 
-| Parameter        | Type        | Description                                                                                      |
-| ---------------- | ----------- | ------------------------------------------------------------------------------------------------ |
-| `prefix`         | `string`    | The part of the CSS variable names before the part name (`frg-checkbox` and so on, without `--`) |
-| `definition`     | `D`         | The design definition of the component (the properties it accepts and their states)              |
-| `design?`        | `Design<D>` | The design values                                                                                |
-| `defaultDesign?` | `Design<D>` | Values that fill the properties and states `design` does not specify (app defaults, for example) |
+| Parameter         | Type        | Description                                                                                                                          |
+| ----------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `prefix`          | `string`    | The part of the CSS variable names before the part name (`frg-checkbox` and so on, without `--`)                                     |
+| `definition`      | `D`         | The design definition of the component (the properties it accepts and their states)                                                  |
+| `design?`         | `Design<D>` | The design values                                                                                                                    |
+| `fallbackDesign?` | `Design<D>` | Values that fill the properties and states `design` does not specify. Use `createEffectiveDesign` to merge the component's props too |
 
 Design values are written along three axes, the same way for every component.
 
@@ -205,11 +206,11 @@ Design values are written along three axes, the same way for every component.
 mergeDesign<D extends DesignDefinition>(
   definition: D,
   design?: Design<D>,
-  defaultDesign?: Design<D>,
+  fallbackDesign?: Design<D>,
 ): Design<D>
 ```
 
-Merges two design values. The properties and states `design` does not specify are filled from `defaultDesign` (the same rules as `defaultDesign` of `createDesignStyle`). A single value in `design` overrides `defaultDesign` in every state, and an object per state fills its omitted states from `defaultDesign`.
+Merges two design values. The properties and states `design` does not specify are filled from `fallbackDesign` (the same rules as `fallbackDesign` of `createDesignStyle`). A single value in `design` overrides `fallbackDesign` in every state, and an object per state fills its omitted states from `fallbackDesign`.
 
 ```ts
 mergeDesign(
@@ -223,13 +224,67 @@ mergeDesign(
 // → { gap: 4, indicator: { backgroundColor: { base: 'blue', checked: 'pink' } } }
 ```
 
+### `createEffectiveDesign`
+
+```ts
+createEffectiveDesign<D extends DesignDefinition>(
+  definition: D,
+  options: CreateEffectiveDesignOptions<D>,
+): Design<D>
+```
+
+Merges the design values of different strengths that a component received into the design values that apply to it. The component only passes what it received and does not need to know the order. Pass the result to `createDesignStyle`.
+
+| Option            | Type        | Description                                                                                                                                                   |
+| ----------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `design?`         | `Design<D>` | The design values given where it is used (the component's `design` prop). The strongest                                                                       |
+| `propsDesign?`    | `Design<D>` | Values made from the component's props that do the same as design values (`fontWeight` of react-icon-material-symbols, for example). Written as single values |
+| `fallbackDesign?` | `Design<D>` | The app-wide design values (the component's `fallbackDesign` prop, passed by `withDesign`). The weakest                                                       |
+
+It merges them in the order `design` > `propsDesign` > `fallbackDesign`, filling the properties and states a stronger one does not specify from a weaker one (the merging is `mergeDesign`).
+
+- The one that took more effort to write wins. An object per state in `design` (`{ fontWeight: { hover: 700 } }`) wins over a prop (`fontWeight={300}`).
+- Between layers, the one closer to where it is used wins. The app-wide values are weaker than the props given where it is used.
+- A property of `propsDesign` whose value is `undefined` is treated as not specified.
+
+```ts
+createEffectiveDesign(definition, {
+  design: { fontWeight: { hover: 700 } },
+  propsDesign: { fontWeight: 300 },
+  fallbackDesign: { fontWeight: 500, filled: 1 },
+});
+// → { fontWeight: { base: 300, hover: 700 }, filled: 1 }
+```
+
+Use it in a component like this:
+
+```tsx
+function Box({ design, fallbackDesign, gap, ...props }: BoxProps) {
+  return (
+    <div
+      {...props}
+      style={createDesignStyle(
+        'my-box',
+        boxDesignDefinition,
+        createEffectiveDesign(boxDesignDefinition, {
+          design,
+          propsDesign: { gap },
+          fallbackDesign,
+        }),
+      )}
+    />
+  );
+}
+Box.designDefinition = boxDesignDefinition;
+```
+
 ### `withDesign`
 
 ```ts
-withDesign<C extends DesignableComponent>(Component: C, design: DefaultDesign<C>): C
+withDesign<C extends DesignableComponent>(Component: C, design: FallbackDesign<C>): C
 ```
 
-Creates a component with default design values. The properties and states the `design` given where it is used does not specify are filled from the values given to this function (`mergeDesign`) and passed to the component's `design`. Create it once in your app and place it as is on screens.
+Creates a component with app-wide design values. The values given to this function are passed in the component's `fallbackDesign` prop. They are not mixed into the `design` given where it is used, so the component can let the values where it is used win over the app-wide values with `createEffectiveDesign`. Create it once in your app and place it as is on screens.
 
 ```tsx
 // Create it once in your app
@@ -237,12 +292,12 @@ export const AppCheckbox = withDesign(Checkbox, {
   indicator: { backgroundColor: { checked: 'var(--brand-accent)' } },
 });
 
-// Place it as is on screens. The design given where it is used wins over the defaults
+// Place it as is on screens. The design given where it is used wins over the app-wide values
 <AppCheckbox design={{ gap: 4 }}>I agree</AppCheckbox>;
 ```
 
-- The component must take design values with a `design` prop and have its design definition in a static `designDefinition` property (every component of `@fringeworks/react-components` has one). Your own components can be wrapped too by adding `designDefinition`.
-- It can be layered. An outer `withDesign` wins (the `design` where it is used > outer > inner > the component's CSS defaults).
+- The component must take design values with `design` and `fallbackDesign` props (merged with `createEffectiveDesign`) and have its design definition in a static `designDefinition` property (every component of `@fringeworks/react-components` has one). Your own components can be wrapped too by adding `designDefinition`.
+- It can be layered. The `fallbackDesign` given where it is used > an outer `withDesign` > an inner `withDesign`, all passed together in `fallbackDesign`. Inside the component, the order is the `design` where it is used > the component's props > `fallbackDesign` > the component's CSS defaults.
 - The created component has the same type as the wrapped one, keeping the type parameters of generic components (`Table` and so on). It also carries over `designDefinition`.
 - It uses no Context and merges the values inside the created component, so you can trace from the code which values apply.
 
@@ -371,8 +426,9 @@ Length properties (`borderRadius`, `borderWidth`, `gap`, `paddingX`, `paddingY`,
 | `DesignProperty`                  | The names of design properties                                                                                                               |
 | `DesignPropertyValues`            | The design properties and the types of values they accept                                                                                    |
 | `DesignStyle`                     | The `style` of CSS variables `createDesignStyle` creates                                                                                     |
-| `DesignableComponent<D>`          | A component `withDesign` can wrap (one that takes `design` and has `designDefinition`)                                                       |
-| `DefaultDesign<C>`                | The default design values passed to `withDesign`                                                                                             |
+| `DesignableComponent<D>`          | A component `withDesign` can wrap (one that takes `design` and `fallbackDesign` and has `designDefinition`)                                  |
+| `FallbackDesign<C>`               | The app-wide design values passed to `withDesign`                                                                                            |
+| `CreateEffectiveDesignOptions<D>` | Options for `createEffectiveDesign`                                                                                                          |
 | `CreateDesignOptions`             | Values passed to `createDesign` that the design is created from                                                                              |
 | `DesignTemplate<D, O>`            | Design template (the same shape as design values, with color and length specs in place of values)                                            |
 | `DesignColorSpec<K>`              | A spec that creates a color (JSON-compatible data)                                                                                           |
