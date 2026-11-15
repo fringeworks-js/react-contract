@@ -21,6 +21,7 @@ const UNITLESS: ReadonlySet<DesignProperty> = new Set([
   'grade',
   'opticalSize',
   'scale',
+  'strokeWidth',
 ]);
 
 /**

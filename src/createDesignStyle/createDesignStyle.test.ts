@@ -97,6 +97,19 @@ describe('createDesignStyle', () => {
     });
   });
 
+  it('strokeWidth の数値は単位なし', () => {
+    expect(
+      createDesignStyle(
+        'frg-lucidesvgicon',
+        { properties: { strokeWidth: ['hover'] } },
+        { strokeWidth: 1.5 },
+      ),
+    ).toEqual({
+      '--frg-lucidesvgicon-strokeWidth': '1.5',
+      '--frg-lucidesvgicon-strokeWidth-hover': '1.5',
+    });
+  });
+
   it('scale の数値は単位なし', () => {
     expect(
       createDesignStyle(
