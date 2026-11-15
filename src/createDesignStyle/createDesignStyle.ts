@@ -20,7 +20,15 @@ const UNITLESS: ReadonlySet<DesignProperty> = new Set([
   'filled',
   'grade',
   'opticalSize',
+  'scale',
 ]);
+
+/**
+ * 数値に付ける単位が px でないプロパティ
+ */
+const UNITS: Partial<Record<DesignProperty, string>> = {
+  rotate: 'deg',
+};
 
 type AnyValue = DesignValue<string | number, DesignState>;
 type AnyPartDesign = Partial<Record<DesignProperty, AnyValue>>;
@@ -57,7 +65,7 @@ function writePart(
       const name = state === 'base' ? property : `${property}-${state}`;
       style[`--${base}-${name}`] =
         typeof value === 'number' && !UNITLESS.has(property)
-          ? appendUnit(value)
+          ? appendUnit(value, UNITS[property])
           : String(value);
     }
   }
@@ -72,7 +80,7 @@ function writePart(
  * - 1つの値は、そのプロパティで効くすべての状態の変数に書く（`'red'` なら `-hover` なども `red`）
  * - 状態ごとのオブジェクトは、書いた状態の変数だけを書く（省略した状態は、部品の CSS の既定の値のまま）
  * - `fallbackDesign` を渡すと、`design` で指定していないプロパティ・状態を、その値で補う（アプリで決めた既定の値など）
- * - 長さの数値は px を付け、`opacity`・`fontWeight`・`lineHeight` の数値は単位なしで書く
+ * - 長さの数値は px を付け、`rotate` の数値は deg を付け、`opacity`・`fontWeight`・`lineHeight`・可変フォントの軸の数値は単位なしで書く
  *
  * @example
  * createDesignStyle('frg-checkbox', definition, {

@@ -84,6 +84,29 @@ describe('createDesignStyle', () => {
     });
   });
 
+  it('rotate の数値は deg、文字列はそのまま', () => {
+    expect(
+      createDesignStyle(
+        'frg-collapsible',
+        { parts: { indicator: { rotate: ['open'] } } },
+        { indicator: { rotate: { base: -45, open: '0.25turn' } } },
+      ),
+    ).toEqual({
+      '--frg-collapsible-indicator-rotate': '-45deg',
+      '--frg-collapsible-indicator-rotate-open': '0.25turn',
+    });
+  });
+
+  it('scale の数値は単位なし', () => {
+    expect(
+      createDesignStyle(
+        'frg-button',
+        { parts: { icon: { scale: [] } } },
+        { icon: { scale: 1.4 } },
+      ),
+    ).toEqual({ '--frg-button-icon-scale': '1.4' });
+  });
+
   it('var(--…) の文字列もそのまま書く', () => {
     expect(
       createDesignStyle('frg-checkbox', definition, {

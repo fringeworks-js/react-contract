@@ -36,7 +36,9 @@ export type DesignState =
  * - `grade`: グレード（`GRAD` の軸）
  * - `opticalSize`: 光学サイズ（`opsz` の軸）
  *
- * 長さ（`string | number`）の数値は px、`opacity`・`fontWeight`・`lineHeight`・`filled`・`grade`・`opticalSize` の数値は単位なしで扱う。
+ * `scale` は倍率（CSS の `scale` と同じく数値）。部品は要素を変形せず、中のアイコンの大きさを決めるのに使う（アイコンを置く部品の `icon.scale` など）。
+ *
+ * 長さ（`string | number`）の数値は px、`rotate` の数値は deg、`opacity`・`fontWeight`・`lineHeight`・`filled`・`grade`・`opticalSize`・`scale` の数値は単位なしで扱う。
  * どの値にも `var(--…)` の文字列を渡せる（テーマの仕組みの CSS 変数につなぐときなど）。
  */
 export type DesignPropertyValues = {
@@ -60,6 +62,8 @@ export type DesignPropertyValues = {
   filled: string | number;
   grade: string | number;
   opticalSize: string | number;
+  rotate: string | number;
+  scale: string | number;
 };
 
 /**
